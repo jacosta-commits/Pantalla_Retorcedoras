@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>PLANTA RETORCIDOS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- CABECERA -->
+  <header>
+    <div class="header-left">
+      <h1>PLANTA RETORCIDOS</h1>
+    </div>
+    <div class="header-right">
+      <span id="date-label">-</span>
+      <button id="settings-btn" title="Configurar Máquinas">⚙️</button>
+    </div>
+  </header>
+
+  <!-- MODAL DE CONFIGURACIÓN -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Seleccionar Máquinas</h2>
+      <div id="machines-list">
+        <!-- Checkboxes se generan dinámicamente -->
+      </div>
+      <button id="save-settings-btn">Guardar</button>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main>
+    <div class="machines-container" id="machines-container">
+      <!-- Los paneles se inyectarán aquí dinámicamente -->
+    </div>
+  </main>
+
+  <!-- Plantilla de panel de máquina -->
+  <script id="machine-template" type="text/template">
+    <div class="machine-panel" id="pn{key}">
+      <h2>{label}</h2>
+      <div class="line ot-line" id="lbl{key}ot">-</div>
+      <div class="line product-line" id="lbl{key}prod">-</div>
+      <div class="box-labeled">
+        <div class="box-labeled-title">CANTIDAD</div>
+        <div class="box-labeled-data req-line" id="lbl{key}req">-</div>
+      </div>
+      <div class="sub-box-labeled prox-carga">
+        <div class="sub-box-title">PROX. CARGA</div>
+        <div class="sub-box-data" id="{key}-prox-carga-data">--</div>
+      </div>
+      <div class="sub-box-labeled descarga-actual">
+        <div class="sub-box-title">DESCARGA ACTUAL</div>
+        <div class="sub-box-data" id="{key}-descarga-actual-data">--</div>
+      </div>
+      <div class="sub-box-labeled prox-descarga">
+        <div class="sub-box-title">PROX. DESCARGA</div>
+        <div class="sub-box-data" id="{key}-prox-descarga-data">--</div>
+      </div>
+      <div class="rest-time" id="{key}-rest">-</div>
+    </div>
+  </script>
+
+  <div id="debug-msg"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="renderer.js"></script>
+</body>
+
+</html>
