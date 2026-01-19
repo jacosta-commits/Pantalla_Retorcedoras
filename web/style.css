@@ -6,11 +6,14 @@
 }
 
 /* Para que html y body ocupen toda la ventana, sin scroll */
-html, body {
-  width: 100vw;
+html,
+body {
+  width: 100%;
   height: 100vh;
+  height: 100dvh;
+  /* Dynamic viewport height */
   font-family: "Segoe UI", Arial, sans-serif;
-  background-color: #eeeeee;  /* Fondo claro similar a VB */
+  background-color: #eeeeee;
   color: #333;
   overflow: hidden;
 }
@@ -28,30 +31,33 @@ header {
   justify-content: space-between;
   align-items: center;
   background-color: #333;
-  padding: 10px 20px;
+  padding: clamp(8px, 1vh, 12px) clamp(10px, 2vw, 20px);
   color: #fff;
 }
+
 .header-left h1 {
-  font-size: 2.4rem; /* 2rem × 1.2 */
+  font-size: clamp(1.2rem, 3vw, 2.4rem);
   margin: 0;
 }
+
 .header-right {
-  font-size: 1.68rem; /* 1.4rem × 1.2 */
+  font-size: clamp(1rem, 2vw, 1.68rem);
   font-weight: bold;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: clamp(8px, 1vw, 15px);
 }
 
 /* BOTÓN SETTINGS */
 #settings-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
   cursor: pointer;
   color: #fff;
   transition: transform 0.3s ease;
 }
+
 #settings-btn:hover {
   transform: rotate(90deg);
 }
@@ -62,23 +68,21 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 20px;
-  /* Se ocultan scrolls externos, el grid interno se ajusta */
+  padding: clamp(5px, 1vh, 10px) clamp(10px, 2vw, 20px);
   overflow: hidden;
+  min-height: 0;
+  /* Important for flex shrinking */
 }
 
 /* Se utiliza un layout Grid para que los paneles se adapten al ancho y alto de la pantalla */
 .machines-container {
   display: grid;
-  /* El número de columnas se ajusta automáticamente.
-     Cada columna ocupará al menos 240px, expandiéndose hasta 1fr */
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-auto-rows: minmax(540px, auto);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  grid-auto-rows: minmax(min(100%, 450px), auto);
+  gap: clamp(10px, 1.5vw, 20px);
   width: 100%;
   height: 100%;
-  padding: 20px;
-  /* Si el contenido excede ligeramente, se usará scroll interno */
+  padding: clamp(10px, 1.5vw, 20px);
   overflow: auto;
 }
 
@@ -87,94 +91,104 @@ main {
   width: 100%;
   height: 100%;
   border-radius: 6px;
-  padding: 15px;
+  padding: clamp(8px, 1.5vh, 15px);
   text-align: center;
   position: relative;
   transition: background-color 0.3s ease, color 0.3s ease;
-  background-color: #045C07; /* Estado running: verde vibrante */
-  color: #fff;             /* Títulos y elementos fijos en blanco */
+  background-color: #045C07;
+  color: #fff;
   border: 2px solid #045C07;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Estado detenido: se agrega la clase "stopped" */
 .machine-panel.stopped {
-  background-color: #900000 !important;  /* Fondo rojo intenso */
+  background-color: #900000 !important;
   border-color: #900000 !important;
   color: #fff !important;
 }
 
 /* TÍTULO DEL PANEL */
 .machine-panel h2 {
-  margin-bottom: 8px;
-  font-size: 1.92rem; /* 1.6rem × 1.2 */
+  margin-bottom: clamp(4px, 0.8vh, 8px);
+  font-size: clamp(1rem, 2.5vw, 1.92rem);
   text-transform: uppercase;
-  padding: 8px;
+  padding: clamp(4px, 0.8vh, 8px);
   border-radius: 4px;
   border-bottom: 2px solid currentColor;
   color: inherit;
+  flex-shrink: 0;
 }
 
 /* LÍNEAS DE INFORMACIÓN (OT y Producto) */
-/* OT se muestra en amarillo */
 .line {
-  margin: 8px 0;
-  font-size: 1.44rem; /* 1.2rem × 1.2 */
+  margin: clamp(4px, 0.8vh, 8px) 0;
+  font-size: clamp(0.9rem, 2vw, 1.44rem);
   color: #ffffff;
+  flex-shrink: 0;
 }
+
 .ot-line {
   font-weight: bold;
-  margin-top: 8px;
-  font-size: 1.44rem; /* 1.2rem × 1.2 */
+  margin-top: clamp(4px, 0.8vh, 8px);
+  font-size: clamp(0.9rem, 2vw, 1.44rem);
   padding: 3px 8px;
   border-radius: 4px;
   background-color: transparent;
   color: #f5c508;
 }
-/* El nombre del producto se muestra en blanco, sin recuadro y en mayúsculas */
+
 .product-line {
-  font-size: 1.56rem; /* 1.3rem × 1.2 */
+  font-size: clamp(1rem, 2.2vw, 1.56rem);
   font-weight: bold;
   font-style: italic;
-  margin-bottom: 10px;
+  margin-bottom: clamp(6px, 1vh, 10px);
   background-color: transparent;
   color: #fff;
 }
 
 /* BLOQUE: CANTIDAD */
 .box-labeled {
-  margin: 10px 0;
-  padding: 14px;
+  margin: clamp(6px, 1vh, 10px) 0;
+  padding: clamp(8px, 1.5vh, 14px);
   border: 2px solid #045C07;
   border-radius: 4px;
   background-color: transparent;
-  color: #fff;  /* Título "CANTIDAD" en blanco */
+  color: #fff;
+  flex-shrink: 0;
 }
+
 .box-labeled-title {
-  font-size: 1.32rem; /* 1.1rem × 1.2 */
+  font-size: clamp(0.85rem, 1.8vw, 1.32rem);
   font-weight: bold;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: clamp(3px, 0.5vh, 6px);
   color: #fff;
 }
+
 .box-labeled-data {
-  font-size: 1.92rem; /* 1.6rem × 1.2 */
+  font-size: clamp(1rem, 2.5vw, 1.92rem);
   text-align: center;
   font-weight: bold;
-  color: #f5c508; /* Datos numéricos en amarillo */
+  color: #f5c508;
 }
 
 /* ETIQUETA CENTRAL (TIEMPO/PARADA) */
 .center-label {
-  font-size: 1.56rem; /* 1.3rem × 1.2 */
+  font-size: clamp(1rem, 2.2vw, 1.56rem);
   font-weight: bold;
-  margin: 10px 0;
-  padding: 12px;
+  margin: clamp(6px, 1vh, 10px) 0;
+  padding: clamp(8px, 1.2vh, 12px);
   border-radius: 4px;
   background-color: transparent;
   border: 2px solid #fff;
   color: #fff;
   display: none;
+  flex-shrink: 0;
 }
+
 .machine-panel.stopped .center-label.active {
   display: block;
   background-color: transparent;
@@ -184,35 +198,41 @@ main {
 
 /* SUBCUADROS (para datos SQL_2) */
 .sub-box-labeled {
-  margin: 10px 0;
-  padding: 12px;
+  margin: clamp(6px, 1vh, 10px) 0;
+  padding: clamp(8px, 1.2vh, 12px);
   border: 2px solid #045C07;
   border-radius: 4px;
   background-color: transparent;
-  min-height: 70px;
+  min-height: clamp(50px, 8vh, 70px);
   transition: all 0.2s ease;
   color: #fff;
+  flex-shrink: 0;
 }
+
 .sub-box-title {
-  font-size: 1.32rem; /* 1.1rem × 1.2 */
+  font-size: clamp(0.85rem, 1.8vw, 1.32rem);
   font-weight: bold;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: clamp(3px, 0.5vh, 6px);
   text-align: center;
   border-bottom: 1px solid #06AA0F;
   padding-bottom: 3px;
   color: #fff;
 }
+
 .sub-box-data {
-  font-size: 1.44rem; /* 1.2rem × 1.2 */
+  font-size: clamp(0.9rem, 2vw, 1.44rem);
   text-align: center;
-  margin-top: 6px;
+  margin-top: clamp(3px, 0.5vh, 6px);
   font-weight: bold;
   color: #fff;
+  line-height: 1.3;
 }
+
 .machine-panel.stopped .sub-box-labeled {
   border-color: #900000;
 }
+
 .machine-panel.stopped .sub-box-labeled .sub-box-title {
   border-bottom: 1px solid #900000;
 }
@@ -224,22 +244,14 @@ main {
   background: #444;
   color: #fff;
   padding: 5px;
-  font-size: 1.2rem; /* 1rem × 1.2 */
+  font-size: clamp(0.8rem, 1.5vw, 1.2rem);
   border-radius: 4px;
-}
-
-/* MEDIA QUERIES PARA PANTALLAS GRANDES */
-@media screen and (min-width: 1400px) {
-  .machine-panel {
-    flex: 1 1 320px;
-    min-height: 600px;
-  }
 }
 
 /* ── sub-cuadros de PRÓX. CARGA siempre en rojo ── */
 .sub-box-labeled.prox-carga {
-  background-color: #8B0000;    /* rojo oscuro */
-  border-color:    #900000;     /* borde un poco más oscuro */
+  background-color: #8B0000;
+  border-color: #900000;
 }
 
 .sub-box-labeled.prox-carga .sub-box-title {
@@ -248,24 +260,24 @@ main {
 
 /* ── Datos de PRÓX. CARGA ── */
 .sub-box-labeled.prox-carga .sub-box-data {
-  font-size: 1.68rem !important; /* 1.4rem × 1.2 */
+  font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
   color: #FFFFFF !important;
 }
 
 /* ── Datos de DESCARGA ACTUAL ── */
 .sub-box-labeled.descarga-actual .sub-box-data {
-  font-size: 1.68rem !important; /* 1.4rem × 1.2 */
+  font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
   color: #FFFFFF !important;
 }
 
 /* ── Datos de PRÓX. DESCARGA ── */
 .sub-box-labeled.prox-descarga .sub-box-data {
-  font-size: 1.68rem !important; /* 1.4rem × 1.2 */
+  font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
   color: #FFFFFF !important;
 }
 
 .rest-time {
-  font-size: 2.4rem; /* 2rem × 1.2 */
+  font-size: clamp(1.2rem, 3vw, 2.4rem);
   font-weight: bold;
   color: rgb(255, 255, 255);
   text-align: center;
@@ -274,35 +286,36 @@ main {
 
 /* —————————————— MODAL STYLES —————————————— */
 .modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
+  display: none;
+  position: fixed;
+  z-index: 1000;
   left: 0;
   top: 0;
-  width: 100%; 
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgba(0,0,0,0.6); 
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .modal-content {
   background-color: #222;
   color: #fff;
-  margin: 10% auto; 
-  padding: 20px;
+  margin: 10% auto;
+  padding: clamp(15px, 2vw, 20px);
   border: 1px solid #444;
-  width: 300px; 
+  width: min(90%, 300px);
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .close-btn {
   color: #aaa;
   float: right;
-  font-size: 28px;
+  font-size: clamp(24px, 4vw, 28px);
   font-weight: bold;
   cursor: pointer;
 }
+
 .close-btn:hover,
 .close-btn:focus {
   color: #fff;
@@ -312,7 +325,7 @@ main {
 
 .modal h2 {
   margin-top: 0;
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
   border-bottom: 1px solid #444;
   padding-bottom: 10px;
   margin-bottom: 15px;
@@ -328,9 +341,10 @@ main {
 .machine-option {
   display: flex;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   cursor: pointer;
 }
+
 .machine-option input {
   margin-right: 10px;
   width: 20px;
@@ -345,9 +359,23 @@ main {
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   cursor: pointer;
 }
+
 #save-settings-btn:hover {
   background-color: #06AA0F;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media screen and (max-width: 768px) {
+  .machines-container {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .machines-container {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
 }
