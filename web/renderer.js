@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     { key: 'dt3', label: 'DONGTAI 3' },
     { key: 'dt4', label: 'DONGTAI 4' },
     { key: 'dt5', label: 'DONGTAI 5' },
-    { key: 'lez', label: 'LEZZENI' }
+    { key: 'dt6', label: 'DONGTAI 6' }
   ];
 
   // --- 1.1 Cargar selección guardada ---
@@ -193,12 +193,23 @@ function initPanelLogic(machines) {
   function setPanelState(key, rest) {
     const pnl = $(`pn${key}`), lbl = $(`${key}-rest`);
     if (!pnl || !lbl) return;
+
     if (rest <= 0) {
-      stopTimers[key] ??= Date.now();
+      // Máquina parada: persistir inicio de parada
+      let start = localStorage.getItem(`stopTime_${key}`);
+      if (!start) {
+        start = Date.now();
+        localStorage.setItem(`stopTime_${key}`, start);
+      }
+      stopTimers[key] = parseInt(start, 10);
+
       pnl.classList.add('stopped');
       lbl.style.display = 'block';
     } else {
+      // Máquina andando: limpiar
+      localStorage.removeItem(`stopTime_${key}`);
       delete stopTimers[key];
+
       pnl.classList.remove('stopped');
       lbl.style.display = 'none';
       lbl.innerText = '-';
@@ -262,13 +273,13 @@ function initPanelLogic(machines) {
 
       // DESCARGA ACTUAL
       const dA = sql2[`${key}desca`]?.[0]?.num_A,
-        dB = sql2[`${key}descb`]?.[0]?.num_A;
+        dB = sql2[`${key}descb`]?.[0]?.num_B;
       $(`${key}-descarga-actual-data`).innerHTML =
         (dA != null || dB != null) ? formatInline(dA, dB) : '-';
 
       // PROX. DESCARGA
       const pA = formatDateWithOffset(sql2[`${key}da`]?.[0]?.fecha_A),
-        pB = formatDateWithOffset(sql2[`${key}db`]?.[0]?.fecha_A);
+        pB = formatDateWithOffset(sql2[`${key}db`]?.[0]?.fecha_B);
       if (!pA && !pB) {
         $(`${key}-prox-descarga-data`).innerHTML = '-';
       } else {

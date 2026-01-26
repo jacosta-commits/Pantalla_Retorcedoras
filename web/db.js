@@ -20,12 +20,25 @@ const MACHINE_MAP = {
   'DONGTAI 3': 'dt3',
   'DONGTAI 4': 'dt4',
   'DONGTAI 5': 'dt5',
-  'LEZZENI': 'lez'
+  'DONGTAI 6': 'dt6'
 };
+
+// Helper para obtener la hora actual de Perú como "Face Value" en UTC.
+function getNowFaceValue() {
+  const s = new Date().toLocaleString('en-CA', {
+    timeZone: 'America/Lima',
+    hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }).replace(', ', 'T');
+  return new Date(s + 'Z');
+}
 
 // Helper para obtener datos de programación activa
 async function getActivePrograms(pool) {
-  // Trae la programación activa (o la última) para cada máquina/lado
+  const nowFace = getNowFaceValue();
+
+  // Trae la programación activa (o la siguiente inmediata) para cada máquina/lado
   // Se une con TITULOS para nombre producto y VIEW_PRD_SCADA005 para requerimiento
   const query = `
     WITH CTE_Progs AS (
@@ -39,17 +52,24 @@ async function getActivePrograms(pool) {
         l.nombre AS lado_nombre,
         t.nombre AS producto_nombre,
         v.canreq,
-        ROW_NUMBER() OVER (PARTITION BY p.maquina_id, p.lado_id ORDER BY p.programacion_id DESC) as rn
+        -- Ordenamos por fecha de inicio ASC para tomar la más próxima (o la actual)
+        ROW_NUMBER() OVER (PARTITION BY p.maquina_id, p.lado_id ORDER BY MIN(pd.fh_inicio_plan) ASC) as rn
       FROM dbo.RET_DGT_PROGRAMACIONES p
       JOIN dbo.RET_DGT_MAQUINAS m ON m.maquina_id = p.maquina_id
       JOIN dbo.RET_DGT_LADOS l    ON l.lado_id = p.lado_id
       JOIN dbo.RET_DGT_TITULOS t  ON t.titulo_id = p.titulo_id
+      JOIN dbo.RET_DGT_PLAN_DESCARGAS pd ON pd.programacion_id = p.programacion_id
       LEFT JOIN Medidores_2023.dbo.VIEW_PRD_SCADA005 v ON v.otcod = p.otcod
-      -- Podríamos filtrar solo las que tienen plan futuro, pero para "ver algo" traemos la última
+      GROUP BY 
+        p.programacion_id, p.maquina_id, p.lado_id, p.otcod, p.titulo_id,
+        m.codigo, l.nombre, t.nombre, v.canreq
+      HAVING MAX(pd.fh_fin_plan) > @now
     )
     SELECT * FROM CTE_Progs WHERE rn = 1;
   `;
-  const result = await pool.request().query(query);
+  const result = await pool.request()
+    .input('now', sql.DateTime, nowFace)
+    .query(query);
   return result.recordset;
 }
 
@@ -84,7 +104,7 @@ async function readSQL1() {
       dt3: [], dt3req: [],
       dt4: [], dt4req: [],
       dt5: [], dt5req: [],
-      lez: [], lezreq: [],
+      dt6: [], dt6req: [],
       ret_sql: [] // No usado en lógica nueva, se deja vacío o se simula
     };
 
@@ -131,10 +151,10 @@ async function readSQL2() {
       dt3ulta: [], dt3ultb: [], dt3desca: [], dt3descb: [], dt3da: [], dt3db: [],
       dt4ulta: [], dt4ultb: [], dt4desca: [], dt4descb: [], dt4da: [], dt4db: [],
       dt5ulta: [], dt5ultb: [], dt5desca: [], dt5descb: [], dt5da: [], dt5db: [],
-      lezulta: [], lezultb: [], lezdesca: [], lezdescb: [], lezda: [], lezdb: []
+      dt6ulta: [], dt6ultb: [], dt6desca: [], dt6descb: [], dt6da: [], dt6db: []
     };
 
-    const now = new Date();
+    const now = getNowFaceValue();
 
     for (const prog of programs) {
       const key = MACHINE_MAP[prog.maquina_codigo];
@@ -165,9 +185,10 @@ async function readSQL2() {
 
       // Mapeo a estructura antigua
 
-      // PROX CARGA
+      // PROX CARGA (Ahora muestra la SIGUIENTE descarga, igual que PROX DESCARGA)
+      // Antes mostraba finPrograma. El usuario pidió que muestre lo mismo que prox descarga.
       output[`${key}ult${suffix}`] = [{
-        [`fechafin_${sideKey}`]: finPrograma
+        [`fechafin_${sideKey}`]: next ? next.fh_fin_plan : finPrograma
       }];
 
       // DESCARGA ACTUAL
