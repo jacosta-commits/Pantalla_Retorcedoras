@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -11,7 +12,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const PORT = 4020;
+const PORT = process.env.PORT || 4020;
 
 // Servir archivos estáticos (HTML, CSS, JS)
 app.use(express.static(__dirname));

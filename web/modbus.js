@@ -73,7 +73,10 @@ const DEFAULT_REGISTERS = [
   { key: 'lez', address: 20, count: 4 }
 ];
 
-const defaultInstance = new ModbusService('192.168.1.47', 502, DEFAULT_REGISTERS);
+const MODBUS_HOST = process.env.MODBUS_IP || '192.168.1.47';
+const MODBUS_PORT = parseInt(process.env.MODBUS_PORT) || 502;
+
+const defaultInstance = new ModbusService(MODBUS_HOST, MODBUS_PORT, DEFAULT_REGISTERS);
 
 module.exports = {
   ModbusService,
