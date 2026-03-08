@@ -52,6 +52,7 @@ async function getActivePrograms(pool) {
         l.nombre AS lado_nombre,
         t.nombre AS producto_nombre,
         v.canreq,
+        p2.pesoneto,
         -- Ordenamos por fecha de inicio ASC para tomar la más próxima (o la actual)
         ROW_NUMBER() OVER (PARTITION BY p.maquina_id, p.lado_id ORDER BY MIN(pd.fh_inicio_plan) ASC) as rn
       FROM dbo.RET_DGT_PROGRAMACIONES p
@@ -60,9 +61,10 @@ async function getActivePrograms(pool) {
       JOIN dbo.RET_DGT_TITULOS t  ON t.titulo_id = p.titulo_id
       JOIN dbo.RET_DGT_PLAN_DESCARGAS pd ON pd.programacion_id = p.programacion_id
       LEFT JOIN Medidores_2023.dbo.VIEW_PRD_SCADA005 v ON v.otcod = p.otcod
+      LEFT JOIN Medidores_2023.dbo.VIEW_PRD_SCADA012 p2 ON p2.otcod = p.otcod
       GROUP BY 
         p.programacion_id, p.maquina_id, p.lado_id, p.otcod, p.titulo_id,
-        m.codigo, l.nombre, t.nombre, v.canreq
+        m.codigo, l.nombre, t.nombre, v.canreq, p2.pesoneto
       HAVING MAX(pd.fh_fin_plan) > @now
     )
     SELECT * FROM CTE_Progs WHERE rn = 1;
@@ -125,7 +127,8 @@ async function readSQL1() {
           pronom: prog.producto_nombre
         }];
         output[`${key}req`] = [{
-          canreq: prog.canreq
+          canreq: prog.canreq,
+          pesoneto: prog.pesoneto
         }];
       }
     }

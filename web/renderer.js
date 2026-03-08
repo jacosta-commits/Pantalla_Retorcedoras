@@ -260,7 +260,18 @@ function initPanelLogic(machines) {
         setTxt(`lbl${key}prod`, row.pronom);
         applyProductColor(key, extractCode(row.pronom));
       }
-      setTxt(`lbl${key}req`, req ? `R: ${parseFloat(req.canreq).toFixed(2)} KGS` : '-');
+
+      const reqEl = $(`lbl${key}req`);
+      if (reqEl) {
+        if (req) {
+          const r = parseFloat(req.canreq) || 0;
+          const p = parseFloat(req.pesoneto) || 0;
+          const diff = r - p;
+          reqEl.innerHTML = `R: ${r.toFixed(2)} KGS<br>P: ${p.toFixed(2)}&nbsp;/&nbsp;${diff.toFixed(2)}`;
+        } else {
+          reqEl.innerHTML = '-';
+        }
+      }
     }
 
     // Rellena sub-cuadros de detalle
