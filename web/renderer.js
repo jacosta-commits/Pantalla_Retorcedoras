@@ -221,6 +221,14 @@ class MachinePanel {
       setTxt(`lbl${this._key}ot`, row.otcod?.trim());
       setTxt(`lbl${this._key}prod`, row.pronom);
       this._applyProductColor(row.pronom);
+    } else {
+      setTxt(`lbl${this._key}ot`, '-');
+      setTxt(`lbl${this._key}prod`, '-');
+      const prodEl = $(`lbl${this._key}prod`);
+      if (prodEl) {
+        prodEl.style.backgroundColor = 'transparent';
+        prodEl.style.color = 'inherit';
+      }
     }
 
     const reqEl = $(`lbl${this._key}req`);
@@ -251,11 +259,13 @@ class MachinePanel {
 
     // DESCARGA ACTUAL
     const dA = sql2Data[`${key}desca`]?.[0]?.num_A;
+    const tA = sql2Data[`${key}desca`]?.[0]?.total_A;
     const dB = sql2Data[`${key}descb`]?.[0]?.num_B;
+    const tB = sql2Data[`${key}descb`]?.[0]?.total_B;
+
     const descActualEl = $(`${key}-descarga-actual-data`);
     if (descActualEl) {
-      descActualEl.innerHTML = (dA != null || dB != null)
-        ? MachinePanel._formatInline(dA, dB) : '-';
+      descActualEl.innerHTML = MachinePanel._formatInline(dA, tA, dB, tB);
     }
 
     // PROX. DESCARGA
@@ -297,9 +307,9 @@ class MachinePanel {
     return d.toISOString().slice(0, 16).replace('T', ' ');
   }
 
-  static _formatInline(A, B) {
-    const a = (A != null) ? `A: ${A}` : '-';
-    const b = (B != null) ? `B: ${B}` : '';
+  static _formatInline(A, totalA, B, totalB) {
+    const a = (totalA > 0) ? `A: ${A} / ${totalA}` : '-';
+    const b = (totalB > 0) ? `B: ${B} / ${totalB}` : '';
     return `${a}&emsp;${b}`;
   }
 }

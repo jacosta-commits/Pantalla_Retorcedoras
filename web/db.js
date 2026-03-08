@@ -165,21 +165,21 @@ class DatabaseService {
 
         // PROX CARGA
         output[`${key}ult${suffix}`] = [{
-          [`fechafin_${sideKey}`]: next ? next.fh_fin_plan : finPrograma
+          [`fechafin_${sideKey}`]: current ? next.fh_fin_plan : (next ? next.fh_inicio_plan : finPrograma)
         }];
 
         // DESCARGA ACTUAL
-        if (current) {
-          output[`${key}desc${suffix}`] = [{
-            [`num_${sideKey}`]: current.secuencia,
-            [`fecha_${sideKey}`]: current.fh_inicio_plan
-          }];
-        }
+        output[`${key}desc${suffix}`] = [{
+          [`num_${sideKey}`]: current ? current.secuencia : 0,
+          [`total_${sideKey}`]: plan.length,
+          [`fecha_${sideKey}`]: current ? current.fh_inicio_plan : (next ? next.fh_inicio_plan : null)
+        }];
 
         // PROX DESCARGA
         if (next) {
+          const nextTime = current ? next.fh_fin_plan : next.fh_inicio_plan;
           output[`${key}d${suffix}`] = [{
-            [`fecha_${sideKey}`]: next.fh_fin_plan
+            [`fecha_${sideKey}`]: nextTime
           }];
         }
       }
@@ -196,13 +196,14 @@ class DatabaseService {
 
 // ── Configuración por defecto ──
 const DEFAULT_CONFIG = {
-  user: 'sa',
-  password: 'F1S4123$',
-  server: '200.14.242.237',
-  database: 'ZENTRIK',
+  user: process.env.SQL_USER || 'sa',
+  password: process.env.SQL_PASSWORD || 'F1S4123$',
+  server: process.env.SQL_SERVER || '200.14.242.237',
+  database: process.env.SQL_DATABASE || 'ZENTRIK',
+  port: parseInt(process.env.SQL_PORT) || 1433,
   options: {
-    encrypt: true,
-    trustServerCertificate: true
+    encrypt: process.env.SQL_ENCRYPT === 'true',
+    trustServerCertificate: process.env.SQL_TRUST_SERVER_CERT === 'true'
   }
 };
 
