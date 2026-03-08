@@ -1,0 +1,10 @@
+// ═══════════════════════════════════════════════════
+//  Archivo principal SASS – Retorcedoras
+//  Importa todos los partials en orden
+// ═══════════════════════════════════════════════════
+
+@use 'reset';
+@use 'header';
+@use 'panel';
+@use 'modal';
+@use 'responsive';

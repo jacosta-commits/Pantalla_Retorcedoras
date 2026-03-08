@@ -1,0 +1,30 @@
+// ═══════════════════════════════════════════════════
+//  Variables globales del proyecto Retorcedoras
+// ═══════════════════════════════════════════════════
+
+// ── Colores ──
+$color-running:       #045C07;
+$color-running-accent:#06AA0F;
+$color-stopped:       #900000;
+$color-stopped-dark:  #8B0000;
+$color-header-bg:     #333;
+$color-body-bg:       #eeeeee;
+$color-text:          #333;
+$color-white:         #fff;
+$color-ot:            #f5c508;
+$color-modal-bg:      #222;
+$color-modal-border:  #444;
+$color-modal-close:   #aaa;
+$color-debug-bg:      #444;
+
+// ── Tipografía ──
+$font-family: "Segoe UI", Arial, sans-serif;
+
+// ── Bordes ──
+$border-radius:       6px;
+$border-radius-sm:    4px;
+$border-radius-md:    8px;
+
+// ── Breakpoints ──
+$bp-mobile:  768px;
+$bp-desktop: 1400px;

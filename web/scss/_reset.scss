@@ -1,0 +1,27 @@
+// ═══════════════════════════════════════════════════
+//  Reset básico
+// ═══════════════════════════════════════════════════
+@use 'variables' as *;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    /* Dynamic viewport height */
+    font-family: $font-family;
+    background-color: $color-body-bg;
+    color: $color-text;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}

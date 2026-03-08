@@ -4,17 +4,20 @@
   "description": "Aplicación Web SCADA para planta de Retorcidos",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build:css": "npx sass scss/main.scss style.css --no-source-map",
+    "watch:css": "npx sass --watch scss/main.scss style.css --no-source-map"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.7.2",
     "modbus-serial": "^8.0.20-no-serial-port",
+    "mssql": "^11.0.1",
     "serialport": "^13.0.0",
-    "mssql": "^11.0.1"
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "electron": "^35.2.2",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "sass": "^1.97.3"
   }
 }

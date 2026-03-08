@@ -1,0 +1,16 @@
+// ═══════════════════════════════════════════════════
+//  Media Queries responsive
+// ═══════════════════════════════════════════════════
+@use 'variables' as *;
+
+@media screen and (max-width: $bp-mobile) {
+    .machines-container {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    }
+}
+
+@media screen and (min-width: $bp-desktop) {
+    .machines-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}

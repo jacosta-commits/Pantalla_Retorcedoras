@@ -1,0 +1,225 @@
+// ═══════════════════════════════════════════════════
+//  Contenedor principal y paneles de máquinas
+// ═══════════════════════════════════════════════════
+@use 'variables' as *;
+
+// ── Layout principal ──
+main {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: clamp(5px, 1vh, 10px) clamp(10px, 2vw, 20px);
+    overflow: hidden;
+    min-height: 0;
+    /* Important for flex shrinking */
+}
+
+.machines-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    grid-auto-rows: minmax(min(100%, 450px), auto);
+    gap: clamp(10px, 1.5vw, 20px);
+    width: 100%;
+    height: 100%;
+    padding: clamp(10px, 1.5vw, 20px);
+    overflow: auto;
+}
+
+// ── Panel individual ──
+.machine-panel {
+    width: 100%;
+    height: 100%;
+    border-radius: $border-radius;
+    padding: clamp(8px, 1.5vh, 15px);
+    text-align: center;
+    position: relative;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: $color-running;
+    color: $color-white;
+    border: 2px solid $color-running;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    // ── Estado detenido ──
+    &.stopped {
+        background-color: $color-stopped !important;
+        border-color: $color-stopped !important;
+        color: $color-white !important;
+
+        .sub-box-labeled {
+            border-color: $color-stopped;
+
+            .sub-box-title {
+                border-bottom: 1px solid $color-stopped;
+            }
+        }
+
+        .center-label.active {
+            display: block;
+            background-color: transparent;
+            border-color: $color-white;
+            color: $color-white;
+        }
+    }
+
+    // ── Título del panel ──
+    h2 {
+        margin-bottom: clamp(4px, 0.8vh, 8px);
+        font-size: clamp(1rem, 2.5vw, 1.92rem);
+        text-transform: uppercase;
+        padding: clamp(4px, 0.8vh, 8px);
+        border-radius: $border-radius-sm;
+        border-bottom: 2px solid currentColor;
+        color: inherit;
+        flex-shrink: 0;
+    }
+}
+
+// ── Líneas de información (OT y Producto) ──
+.line {
+    margin: clamp(4px, 0.8vh, 8px) 0;
+    font-size: clamp(0.9rem, 2vw, 1.44rem);
+    color: $color-white;
+    flex-shrink: 0;
+}
+
+.ot-line {
+    font-weight: bold;
+    margin-top: clamp(4px, 0.8vh, 8px);
+    font-size: clamp(0.9rem, 2vw, 1.44rem);
+    padding: 3px 8px;
+    border-radius: $border-radius-sm;
+    background-color: transparent;
+    color: $color-ot;
+}
+
+.product-line {
+    font-size: clamp(1rem, 2.2vw, 1.56rem);
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: clamp(6px, 1vh, 10px);
+    background-color: transparent;
+    color: $color-white;
+}
+
+// ── Bloque: CANTIDAD ──
+.box-labeled {
+    margin: clamp(6px, 1vh, 10px) 0;
+    padding: clamp(8px, 1.5vh, 14px);
+    border: 2px solid $color-running;
+    border-radius: $border-radius-sm;
+    background-color: transparent;
+    color: $color-white;
+    flex-shrink: 0;
+}
+
+.box-labeled-title {
+    font-size: clamp(0.85rem, 1.8vw, 1.32rem);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: clamp(3px, 0.5vh, 6px);
+    color: $color-white;
+}
+
+.box-labeled-data {
+    font-size: clamp(1rem, 2.5vw, 1.92rem);
+    text-align: center;
+    font-weight: bold;
+    color: $color-ot;
+}
+
+// ── Etiqueta central (tiempo/parada) ──
+.center-label {
+    font-size: clamp(1rem, 2.2vw, 1.56rem);
+    font-weight: bold;
+    margin: clamp(6px, 1vh, 10px) 0;
+    padding: clamp(8px, 1.2vh, 12px);
+    border-radius: $border-radius-sm;
+    background-color: transparent;
+    border: 2px solid $color-white;
+    color: $color-white;
+    display: none;
+    flex-shrink: 0;
+}
+
+// ── Sub-cuadros (datos SQL_2) ──
+.sub-box-labeled {
+    margin: clamp(6px, 1vh, 10px) 0;
+    padding: clamp(8px, 1.2vh, 12px);
+    border: 2px solid $color-running;
+    border-radius: $border-radius-sm;
+    background-color: transparent;
+    min-height: clamp(50px, 8vh, 70px);
+    transition: all 0.2s ease;
+    color: $color-white;
+    flex-shrink: 0;
+
+    // ── Próxima carga (siempre en rojo) ──
+    &.prox-carga {
+        background-color: $color-stopped-dark;
+        border-color: $color-stopped;
+
+        .sub-box-title {
+            border-bottom: 1px solid $color-stopped;
+        }
+
+        .sub-box-data {
+            font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
+            color: $color-white !important;
+        }
+    }
+
+    // ── Descarga actual ──
+    &.descarga-actual .sub-box-data {
+        font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
+        color: $color-white !important;
+    }
+
+    // ── Próxima descarga ──
+    &.prox-descarga .sub-box-data {
+        font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
+        color: $color-white !important;
+    }
+}
+
+.sub-box-title {
+    font-size: clamp(0.85rem, 1.8vw, 1.32rem);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: clamp(3px, 0.5vh, 6px);
+    text-align: center;
+    border-bottom: 1px solid $color-running-accent;
+    padding-bottom: 3px;
+    color: $color-white;
+}
+
+.sub-box-data {
+    font-size: clamp(0.9rem, 2vw, 1.44rem);
+    text-align: center;
+    margin-top: clamp(3px, 0.5vh, 6px);
+    font-weight: bold;
+    color: $color-white;
+    line-height: 1.3;
+}
+
+// ── Tiempo de parada ──
+.rest-time {
+    font-size: clamp(1.2rem, 3vw, 2.4rem);
+    font-weight: bold;
+    color: $color-white;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+// ── Debug ──
+#debug-msg {
+    margin-top: 10px;
+    text-align: center;
+    background: $color-debug-bg;
+    color: $color-white;
+    padding: 5px;
+    font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+    border-radius: $border-radius-sm;
+}

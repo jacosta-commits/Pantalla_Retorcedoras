@@ -1,0 +1,40 @@
+// ═══════════════════════════════════════════════════
+//  Cabecera
+// ═══════════════════════════════════════════════════
+@use 'variables' as *;
+
+header {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $color-header-bg;
+    padding: clamp(8px, 1vh, 12px) clamp(10px, 2vw, 20px);
+    color: $color-white;
+}
+
+.header-left h1 {
+    font-size: clamp(1.2rem, 3vw, 2.4rem);
+    margin: 0;
+}
+
+.header-right {
+    font-size: clamp(1rem, 2vw, 1.68rem);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1vw, 15px);
+}
+
+#settings-btn {
+    background: none;
+    border: none;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    cursor: pointer;
+    color: $color-white;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: rotate(90deg);
+    }
+}
