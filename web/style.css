@@ -364,3 +364,22 @@ main {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
+
+/* Animaciones */
+@keyframes blink-soft {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.alert-blink {
+  animation: blink-soft 2s ease-in-out infinite;
+}

@@ -281,6 +281,27 @@ class MachinePanel {
         proxDescEl.innerHTML = html;
       }
     }
+
+    // Guardar fechas para cálculo de alerta global
+    this._nextLoadDates = {
+      a: sql2Data[`${key}ulta`]?.[0]?.fechafin_A,
+      b: sql2Data[`${key}ultb`]?.[0]?.fechafin_B
+    };
+  }
+
+  getNextLoadTimes() {
+    const times = [];
+    if (this._nextLoadDates?.a) times.push(new Date(this._nextLoadDates.a));
+    if (this._nextLoadDates?.b) times.push(new Date(this._nextLoadDates.b));
+    return times;
+  }
+
+  setBlinking(active) {
+    const el = $(`${this._key}-prox-carga-data`)?.parentElement;
+    if (el && el.classList.contains('prox-carga')) {
+      if (active) el.classList.add('alert-blink');
+      else el.classList.remove('alert-blink');
+    }
   }
 
   // ── Helpers privados ──
@@ -367,6 +388,41 @@ class SocketManager {
         panel.fillMain(sql1);
         panel.fillDetail(sql2);
       });
+      this._updateAlerts();
+    });
+  }
+
+  _updateAlerts() {
+    const alertThresholdMs = 2 * 60 * 60 * 1000; // 2 horas en ms
+    const clashingKeys = new Set();
+    const allMachineData = [];
+
+    // 1. Recolectar todos los tiempos de todas las máquinas
+    this._panels.forEach((panel, key) => {
+      const times = panel.getNextLoadTimes();
+      times.forEach(t => allMachineData.push({ key, time: t.getTime() }));
+    });
+
+    // 2. Comparar cada par de máquinas diferentes
+    for (let i = 0; i < allMachineData.length; i++) {
+      for (let j = i + 1; j < allMachineData.length; j++) {
+        const m1 = allMachineData[i];
+        const m2 = allMachineData[j];
+
+        // Solo comparar si son máquinas distintas
+        if (m1.key !== m2.key) {
+          const diff = Math.abs(m1.time - m2.time);
+          if (diff <= alertThresholdMs) {
+            clashingKeys.add(m1.key);
+            clashingKeys.add(m2.key);
+          }
+        }
+      }
+    }
+
+    // 3. Aplicar el parpadeo
+    this._panels.forEach((panel, key) => {
+      panel.setBlinking(clashingKeys.has(key));
     });
   }
 }

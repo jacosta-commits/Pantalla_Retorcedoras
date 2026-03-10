@@ -229,3 +229,14 @@ main {
     font-size: clamp(0.8rem, 1.5vw, 1.2rem);
     border-radius: $border-radius-sm;
 }
+
+/* Animaciones */
+@keyframes blink-soft {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+.alert-blink {
+    animation: blink-soft 2s ease-in-out infinite !important;
+}
