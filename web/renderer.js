@@ -220,7 +220,7 @@ class MachinePanel {
     if (row) {
       setTxt(`lbl${this._key}ot`, row.otcod?.trim());
       setTxt(`lbl${this._key}prod`, row.pronom);
-      this._applyProductColor(row.pronom);
+      this._applyProductColor(row.pronom, row.color);
     } else {
       setTxt(`lbl${this._key}ot`, '-');
       setTxt(`lbl${this._key}prod`, '-');
@@ -237,7 +237,7 @@ class MachinePanel {
         const r = parseFloat(req.canreq) || 0;
         const p = parseFloat(req.pesoneto) || 0;
         const diff = r - p;
-        reqEl.innerHTML = `R: ${r.toFixed(2)} KGS<br>P: ${p.toFixed(2)}&nbsp;/&nbsp;${diff.toFixed(2)}`;
+        reqEl.innerHTML = `REQ: ${r.toFixed(2)} KGS<div class="pend-line">PEND: ${diff.toFixed(2)} KGS</div>`;
       } else {
         reqEl.innerHTML = '-';
       }
@@ -285,15 +285,39 @@ class MachinePanel {
 
   // ── Helpers privados ──
 
-  _applyProductColor(productName) {
+  _applyProductColor(productName, dbColor) {
     const el = $(`lbl${this._key}prod`);
-    const code = MachinePanel._extractCode(productName);
-    if (!el || !MachinePanel.COLOR_MAP[code]) return;
-    const { bg, fg } = MachinePanel.COLOR_MAP[code];
+    if (!el) return;
+
+    let bg = 'transparent'; // default fallback for new titles without color yet
+    let fg = '#F5F5F5';
+
+    if (dbColor) {
+      bg = dbColor;
+      fg = this._getContrastColor(dbColor);
+    } else {
+      const code = MachinePanel._extractCode(productName);
+      if (MachinePanel.COLOR_MAP[code]) {
+        bg = MachinePanel.COLOR_MAP[code].bg;
+        fg = MachinePanel.COLOR_MAP[code].fg;
+      }
+    }
+
     el.style.backgroundColor = bg;
     el.style.color = fg;
     el.style.padding = '2px 6px';
     el.style.borderRadius = '4px';
+  }
+
+  _getContrastColor(hexcolor) {
+    if (!hexcolor) return '#000000';
+    hexcolor = hexcolor.replace('#', '');
+    if (hexcolor.length === 3) hexcolor = hexcolor.split('').map(c => c + c).join('');
+    var r = parseInt(hexcolor.substr(0, 2), 16);
+    var g = parseInt(hexcolor.substr(2, 2), 16);
+    var b = parseInt(hexcolor.substr(4, 2), 16);
+    var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return (yiq >= 128) ? '#000000' : '#FFFFFF';
   }
 
   static _extractCode(name) {

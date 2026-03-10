@@ -128,6 +128,12 @@ main {
     text-align: center;
     font-weight: bold;
     color: $color-ot;
+
+    .pend-line {
+        color: $color-pend;
+        font-size: clamp(1.2rem, 3vw, 2.3rem);
+        margin-top: 5px;
+    }
 }
 
 // ── Etiqueta central (tiempo/parada) ──

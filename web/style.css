@@ -52,6 +52,7 @@ header {
   color: #fff;
   transition: transform 0.3s ease;
 }
+
 #settings-btn:hover {
   transform: rotate(90deg);
 }
@@ -93,23 +94,28 @@ main {
   flex-direction: column;
   overflow: hidden;
 }
+
 .machine-panel.stopped {
   background-color: #900000 !important;
   border-color: #900000 !important;
   color: #fff !important;
 }
+
 .machine-panel.stopped .sub-box-labeled {
   border-color: #900000;
 }
+
 .machine-panel.stopped .sub-box-labeled .sub-box-title {
   border-bottom: 1px solid #900000;
 }
+
 .machine-panel.stopped .center-label.active {
   display: block;
   background-color: transparent;
   border-color: #fff;
   color: #fff;
 }
+
 .machine-panel h2 {
   margin-bottom: clamp(4px, 0.8vh, 8px);
   font-size: clamp(1rem, 2.5vw, 1.92rem);
@@ -172,6 +178,12 @@ main {
   color: #f5c508;
 }
 
+.box-labeled-data .pend-line {
+  color: #00e5ff;
+  font-size: clamp(1.2rem, 3vw, 2.3rem);
+  margin-top: 5px;
+}
+
 .center-label {
   font-size: clamp(1rem, 2.2vw, 1.56rem);
   font-weight: bold;
@@ -196,23 +208,28 @@ main {
   color: #fff;
   flex-shrink: 0;
 }
+
 .sub-box-labeled.prox-carga {
   background-color: #8B0000;
   border-color: #900000;
 }
+
 .sub-box-labeled.prox-carga .sub-box-title {
   border-bottom: 1px solid #900000;
 }
+
 .sub-box-labeled.prox-carga .sub-box-data {
   font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
   color: #fff !important;
 }
+
 .sub-box-labeled.descarga-actual .sub-box-data {
   font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
   color: #fff !important;
 }
+
 .sub-box-labeled.prox-descarga .sub-box-data {
-  font-size: clamp(1rem, 2.2vw, 1.68rem) !important;
+  font-size: clamp(1.2rem, 2.5vw, 1.95rem) !important;
   color: #fff !important;
 }
 
@@ -265,6 +282,7 @@ main {
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.6);
 }
+
 .modal h2 {
   margin-top: 0;
   font-size: clamp(1.2rem, 2.5vw, 1.5rem);
@@ -291,7 +309,9 @@ main {
   font-weight: bold;
   cursor: pointer;
 }
-.close-btn:hover, .close-btn:focus {
+
+.close-btn:hover,
+.close-btn:focus {
   color: #fff;
   text-decoration: none;
   cursor: pointer;
@@ -310,6 +330,7 @@ main {
   font-size: clamp(1rem, 2vw, 1.2rem);
   cursor: pointer;
 }
+
 .machine-option input {
   margin-right: 10px;
   width: 20px;
@@ -327,6 +348,7 @@ main {
   font-size: clamp(1rem, 2vw, 1.2rem);
   cursor: pointer;
 }
+
 #save-settings-btn:hover {
   background-color: #06AA0F;
 }
@@ -336,6 +358,7 @@ main {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   }
 }
+
 @media screen and (min-width: 1400px) {
   .machines-container {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

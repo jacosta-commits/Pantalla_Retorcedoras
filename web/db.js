@@ -42,6 +42,7 @@ class DatabaseService {
           m.codigo AS maquina_codigo,
           l.nombre AS lado_nombre,
           t.nombre AS producto_nombre,
+          t.color AS producto_color,
           v.canreq,
           p2.pesoneto,
           ROW_NUMBER() OVER (PARTITION BY p.maquina_id, p.lado_id ORDER BY MIN(pd.fh_inicio_plan) ASC) as rn
@@ -54,7 +55,7 @@ class DatabaseService {
         LEFT JOIN Medidores_2023.dbo.VIEW_PRD_SCADA012 p2 ON p2.otcod = p.otcod
         GROUP BY 
           p.programacion_id, p.maquina_id, p.lado_id, p.otcod, p.titulo_id,
-          m.codigo, l.nombre, t.nombre, v.canreq, p2.pesoneto
+          m.codigo, l.nombre, t.nombre, t.color, v.canreq, p2.pesoneto
         HAVING MAX(pd.fh_fin_plan) > @now
       )
       SELECT * FROM CTE_Progs WHERE rn = 1;
@@ -89,7 +90,8 @@ class DatabaseService {
       main: {
         ctcod: 'Ret-xx-xx',
         otcod: prog.otcod,
-        pronom: prog.producto_nombre
+        pronom: prog.producto_nombre,
+        color: prog.producto_color
       },
       req: {
         canreq: prog.canreq,
@@ -163,9 +165,9 @@ class DatabaseService {
         const suffix = (prog.lado_nombre === 'A' || prog.lado_nombre === 'LADO A') ? 'a' : 'b';
         const sideKey = (prog.lado_nombre === 'A' || prog.lado_nombre === 'LADO A') ? 'A' : 'B';
 
-        // PROX CARGA
+        // PROX CARGA (Es la fecha fin de toda la programación: la última descarga)
         output[`${key}ult${suffix}`] = [{
-          [`fechafin_${sideKey}`]: current ? next.fh_fin_plan : (next ? next.fh_inicio_plan : finPrograma)
+          [`fechafin_${sideKey}`]: finPrograma
         }];
 
         // DESCARGA ACTUAL
